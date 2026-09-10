@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Dranken Kassa</title>
+
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kassa">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="app-header">
+    <h1>Dranken Kassa</h1>
+    <div id="status-badge" class="status-badge online">
+      <span class="status-dot"></span>
+      <span id="status-text">Online</span>
+    </div>
+  </header>
+
+  <!-- Category Filter Bar -->
+  <nav class="category-nav" id="category-nav">
+    <button class="cat-btn active" data-category="all">Alles</button>
+  </nav>
+
+  <!-- Main Drink Grid -->
+  <main class="drink-container">
+    <div class="drink-grid" id="drink-grid">
+      <!-- Items dynamically populated by app.js -->
+    </div>
+  </main>
+
+  <!-- Backdrop for Drawer -->
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+  <!-- Bottom Order Bar & Expandable Drawer -->
+  <section class="order-section" id="order-section">
+    
+    <!-- Expandable Drawer Content -->
+    <div class="drawer-content" id="drawer-content">
+      <div class="drawer-header">
+        <h2>Besteloverzicht</h2>
+        
+        <!-- View Mode Toggle Buttons -->
+        <div class="view-toggle" id="view-toggle">
+          <button class="toggle-btn active" data-mode="tickets">Bonnen</button>
+          <button class="toggle-btn" data-mode="euro">€ Euro</button>
+          <button class="toggle-btn" data-mode="both">Beide</button>
+        </div>
+      </div>
+
+      <div class="order-items-list" id="order-items-list">
+        <!-- Selected items listed here dynamically -->
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn-clear" id="btn-clear">Wis Bestelling</button>
+      </div>
+    </div>
+
+    <!-- Always Visible Order Bar -->
+    <div class="order-bar" id="order-bar">
+      <div class="order-bar-info">
+        <span class="drink-count-badge" id="drink-count-badge">0</span>
+        <div class="order-totals">
+          <div class="total-tickets" id="total-tickets-display">0 bonnen</div>
+          <div class="total-euro" id="total-euro-display">€ 0,00</div>
+        </div>
+      </div>
+
+      <div class="order-bar-controls">
+        <button class="btn-drawer-toggle" id="btn-drawer-toggle" aria-label="Bestelling overzicht">
+          <span class="chevron" id="drawer-chevron">▲</span>
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Main JS Script -->
+  <script src="app.js"></script>
+</body>
+</html>

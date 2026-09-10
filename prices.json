@@ -1,0 +1,55 @@
+{
+  "ticket_price": 0.60,
+  "currency": "€",
+  "categories": [
+    {
+      "id": "frisdrank",
+      "name": "Frisdranken"
+    },
+    {
+      "id": "bier",
+      "name": "Bieren"
+    },
+    {
+      "id": "snacks",
+      "name": "Snacks"
+    }
+  ],
+  "items": [
+    {
+      "id": "cola",
+      "name": "Coca-Cola",
+      "tickets": 3,
+      "category": "frisdrank",
+      "image": "assets/cola.png"
+    },
+    {
+      "id": "water",
+      "name": "Plat Water",
+      "tickets": 2,
+      "category": "frisdrank",
+      "image": "assets/water.png"
+    },
+    {
+      "id": "pils",
+      "name": "Pils / Stella",
+      "tickets": 3,
+      "category": "bier",
+      "image": "assets/pils.png"
+    },
+    {
+      "id": "duvel",
+      "name": "Duvel",
+      "tickets": 5,
+      "category": "bier",
+      "image": "assets/duvel.png"
+    },
+    {
+      "id": "chips",
+      "name": "Chips Zout / Paprika",
+      "tickets": 2,
+      "category": "snacks",
+      "image": "assets/chips.png"
+    }
+  ]
+}
