@@ -21,7 +21,7 @@
       "name": "Coca-Cola",
       "tickets": 3,
       "category": "frisdrank",
-      "image": "assets/coca-cola.avif"
+      "image": "assets/cocacola.avif"
     },
     {
       "id": "water",

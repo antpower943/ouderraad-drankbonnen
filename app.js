@@ -90,11 +90,11 @@ function formatItemPrice(tickets) {
   const euroAmount = (tickets * config.ticket_price).toFixed(2).replace('.', ',');
   
   if (viewMode === 'tickets') {
-    return `${tickets} bon${tickets > 1 ? 'nen' : ''}`;
+    return `${tickets} bonnetje${tickets > 1 ? 's' : ''}`;
   } else if (viewMode === 'euro') {
     return `${config.currency} ${euroAmount}`;
   } else {
-    return `${tickets} bon${tickets > 1 ? 'nen' : ''} (${config.currency} ${euroAmount})`;
+    return `${tickets} bonnetje${tickets > 1 ? 's' : ''} (${config.currency} ${euroAmount})`;
   }
 }
 
@@ -115,7 +115,7 @@ function renderCategories() {
   }
 }
 
-// Drinks Grid
+// Full Drinks Grid Render (only used when switching categories, views, or clearing)
 function renderDrinkGrid() {
   drinkGrid.innerHTML = '';
 
@@ -133,7 +133,7 @@ function renderDrinkGrid() {
       ? `<img src="${item.image}" alt="${item.name}" onerror="this.outerHTML='<div class=\\'placeholder-img\\'>🥤</div>'">` 
       : `<div class="placeholder-img">🥤</div>`;
 
-    const badgeHtml = count > 0 ? `<div class="card-badge">${count}</div>` : '';
+    const badgeHtml = `<div class="card-badge ${count === 0 ? 'hidden' : ''}">${count}</div>`;
     const formattedPrice = formatItemPrice(item.tickets);
 
     card.innerHTML = `
@@ -145,6 +145,31 @@ function renderDrinkGrid() {
 
     drinkGrid.appendChild(card);
   });
+}
+
+// Target-update a single card in-place without re-rendering grid
+function updateSingleCardInPlace(itemId) {
+  const card = drinkGrid.querySelector(`.drink-card[data-id="${itemId}"]`);
+  if (!card) return;
+
+  const count = currentOrder[itemId] || 0;
+  let badge = card.querySelector('.card-badge');
+
+  if (count > 0) {
+    card.classList.add('selected');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'card-badge';
+      card.appendChild(badge);
+    }
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    card.classList.remove('selected');
+    if (badge) {
+      badge.classList.add('hidden');
+    }
+  }
 }
 
 // Drawer Selected Items Overview List
@@ -205,13 +230,13 @@ function updateTotals() {
   drinkCountBadge.textContent = totalCount;
 
   if (viewMode === 'tickets') {
-    totalPrimaryDisplay.textContent = `${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''}`;
+    totalPrimaryDisplay.textContent = `${totalTickets} bonnetje${totalTickets !== 1 ? 's' : ''}`;
     totalSecondaryDisplay.textContent = `(${config.currency} ${totalEuro})`;
   } else if (viewMode === 'euro') {
     totalPrimaryDisplay.textContent = `${config.currency} ${totalEuro}`;
-    totalSecondaryDisplay.textContent = `(${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''})`;
+    totalSecondaryDisplay.textContent = `(${totalTickets} bonnetje${totalTickets !== 1 ? 's' : ''})`;
   } else {
-    totalPrimaryDisplay.textContent = `${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''}`;
+    totalPrimaryDisplay.textContent = `${totalTickets} bonnetje${totalTickets !== 1 ? 's' : ''}`;
     totalSecondaryDisplay.textContent = `${config.currency} ${totalEuro}`;
   }
 
@@ -229,13 +254,14 @@ function updateQuantity(itemId, delta) {
     currentOrder[itemId] = updated;
   }
 
-  renderDrinkGrid();
+  // Update card DOM directly without grid flash
+  updateSingleCardInPlace(itemId);
   updateTotals();
 }
 
 function deleteItem(itemId) {
   delete currentOrder[itemId];
-  renderDrinkGrid();
+  updateSingleCardInPlace(itemId);
   updateTotals();
 }
 
@@ -301,7 +327,6 @@ function setupEventListeners() {
     btn.classList.add('active');
     viewMode = btn.dataset.mode;
 
-    // Refresh both grid prices and drawer list
     renderDrinkGrid();
     updateTotals();
   });

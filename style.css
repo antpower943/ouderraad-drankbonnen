@@ -438,3 +438,7 @@ body {
   background-color: var(--accent-red);
   color: #ffffff;
 }
+
+.card-badge.hidden {
+  display: none !important;
+}
