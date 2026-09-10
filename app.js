@@ -352,3 +352,55 @@ function closeDrawer() {
   drawerBackdrop.classList.remove('open');
   drawerChevron.classList.remove('open');
 }
+
+// --- Screen Wake Lock Management ---
+let wakeLock = null;
+
+async function requestWakeLock() {
+  if ('wakeLock' in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      updateWakeBadge(true);
+
+      wakeLock.addEventListener('release', () => {
+        updateWakeBadge(false);
+      });
+    } catch (err) {
+      console.warn(`Wake Lock request failed: ${err.name}, ${err.message}`);
+      updateWakeBadge(false);
+    }
+  } else {
+    console.warn('Screen Wake Lock API not supported on this browser.');
+    updateWakeBadge(false);
+  }
+}
+
+function updateWakeBadge(isActive) {
+  const wakeBadge = document.getElementById('wake-badge');
+  if (!wakeBadge) return;
+  if (isActive) {
+    wakeBadge.style.opacity = '1';
+    wakeBadge.style.borderColor = '#38bdf8';
+  } else {
+    wakeBadge.style.opacity = '0.4';
+    wakeBadge.style.borderColor = 'transparent';
+  }
+}
+
+// Re-acquire lock when the app comes back to the foreground or user interacts
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    await requestWakeLock();
+  }
+});
+
+// Initialize Wake Lock on app load & on first tap (iOS requirement)
+document.addEventListener('DOMContentLoaded', () => {
+  requestWakeLock();
+});
+
+document.addEventListener('click', () => {
+  if (!wakeLock) {
+    requestWakeLock();
+  }
+}, { once: false });
