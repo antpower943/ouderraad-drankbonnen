@@ -22,8 +22,8 @@ const drawerBackdrop = document.getElementById('drawer-backdrop');
 const drawerChevron = document.getElementById('drawer-chevron');
 const orderItemsList = document.getElementById('order-items-list');
 const drinkCountBadge = document.getElementById('drink-count-badge');
-const totalTicketsDisplay = document.getElementById('total-tickets-display');
-const totalEuroDisplay = document.getElementById('total-euro-display');
+const totalPrimaryDisplay = document.getElementById('total-primary-display');
+const totalSecondaryDisplay = document.getElementById('total-secondary-display');
 const btnClear = document.getElementById('btn-clear');
 const statusBadge = document.getElementById('status-badge');
 const statusText = document.getElementById('status-text');
@@ -64,7 +64,7 @@ function initOnlineStatusListener() {
   updateOnlineStatus();
 }
 
-// Fetch Prices JSON with Network-First logic handling
+// Fetch Prices JSON
 async function fetchPricesAndInit() {
   try {
     const response = await fetch(`./prices.json?t=${Date.now()}`);
@@ -83,6 +83,19 @@ async function fetchPricesAndInit() {
   renderCategories();
   renderDrinkGrid();
   updateTotals();
+}
+
+// --- Helper Functions ---
+function formatItemPrice(tickets) {
+  const euroAmount = (tickets * config.ticket_price).toFixed(2).replace('.', ',');
+  
+  if (viewMode === 'tickets') {
+    return `${tickets} bon${tickets > 1 ? 'nen' : ''}`;
+  } else if (viewMode === 'euro') {
+    return `${config.currency} ${euroAmount}`;
+  } else {
+    return `${tickets} bon${tickets > 1 ? 'nen' : ''} (${config.currency} ${euroAmount})`;
+  }
 }
 
 // --- Rendering Functions ---
@@ -113,26 +126,21 @@ function renderDrinkGrid() {
   filteredItems.forEach((item) => {
     const count = currentOrder[item.id] || 0;
     const card = document.createElement('div');
-    card.className = 'drink-card';
+    card.className = `drink-card ${count > 0 ? 'selected' : ''}`;
+    card.dataset.id = item.id;
 
     const imageHtml = item.image 
       ? `<img src="${item.image}" alt="${item.name}" onerror="this.outerHTML='<div class=\\'placeholder-img\\'>🥤</div>'">` 
       : `<div class="placeholder-img">🥤</div>`;
 
     const badgeHtml = count > 0 ? `<div class="card-badge">${count}</div>` : '';
-
-    const calculatedPrice = (item.tickets * config.ticket_price).toFixed(2);
+    const formattedPrice = formatItemPrice(item.tickets);
 
     card.innerHTML = `
       ${badgeHtml}
       ${imageHtml}
       <div class="drink-name">${item.name}</div>
-      <div class="drink-tickets">${item.tickets} bon${item.tickets > 1 ? 'nen' : ''} (${config.currency} ${calculatedPrice.replace('.', ',')})</div>
-      <div class="card-controls">
-        <button class="btn-counter btn-minus" data-id="${item.id}">-</button>
-        <span class="item-count">${count}</span>
-        <button class="btn-counter btn-plus" data-id="${item.id}">+</button>
-      </div>
+      <div class="drink-tickets">${formattedPrice}</div>
     `;
 
     drinkGrid.appendChild(card);
@@ -156,16 +164,7 @@ function renderOrderList() {
 
     const count = currentOrder[id];
     const totalItemTickets = item.tickets * count;
-    const totalItemEuro = (totalItemTickets * config.ticket_price).toFixed(2).replace('.', ',');
-
-    let priceSubtitle = '';
-    if (viewMode === 'tickets') {
-      priceSubtitle = `${totalItemTickets} bon${totalItemTickets > 1 ? 'nen' : ''}`;
-    } else if (viewMode === 'euro') {
-      priceSubtitle = `${config.currency} ${totalItemEuro}`;
-    } else {
-      priceSubtitle = `${totalItemTickets} bon${totalItemTickets > 1 ? 'nen' : ''} (${config.currency} ${totalItemEuro})`;
-    }
+    const priceSubtitle = formatItemPrice(totalItemTickets);
 
     const row = document.createElement('div');
     row.className = 'order-item-row';
@@ -204,8 +203,17 @@ function updateTotals() {
   const totalEuro = (totalTickets * config.ticket_price).toFixed(2).replace('.', ',');
 
   drinkCountBadge.textContent = totalCount;
-  totalTicketsDisplay.textContent = `${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''}`;
-  totalEuroDisplay.textContent = `${config.currency} ${totalEuro}`;
+
+  if (viewMode === 'tickets') {
+    totalPrimaryDisplay.textContent = `${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''}`;
+    totalSecondaryDisplay.textContent = `(${config.currency} ${totalEuro})`;
+  } else if (viewMode === 'euro') {
+    totalPrimaryDisplay.textContent = `${config.currency} ${totalEuro}`;
+    totalSecondaryDisplay.textContent = `(${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''})`;
+  } else {
+    totalPrimaryDisplay.textContent = `${totalTickets} bon${totalTickets !== 1 ? 'nen' : ''}`;
+    totalSecondaryDisplay.textContent = `${config.currency} ${totalEuro}`;
+  }
 
   renderOrderList();
 }
@@ -250,8 +258,16 @@ function setupEventListeners() {
     renderDrinkGrid();
   });
 
-  // Quantity Buttons inside Grid and Drawer
-  document.addEventListener('click', (e) => {
+  // Tapping anywhere on a Drink Card increments +1
+  drinkGrid.addEventListener('click', (e) => {
+    const card = e.target.closest('.drink-card');
+    if (card) {
+      updateQuantity(card.dataset.id, 1);
+    }
+  });
+
+  // Quantity adjustments inside the Drawer
+  drawerContent.addEventListener('click', (e) => {
     const btnPlus = e.target.closest('.btn-plus');
     const btnMinus = e.target.closest('.btn-minus');
     const btnDelete = e.target.closest('.btn-delete-item');
@@ -284,7 +300,10 @@ function setupEventListeners() {
     document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     viewMode = btn.dataset.mode;
-    renderOrderList();
+
+    // Refresh both grid prices and drawer list
+    renderDrinkGrid();
+    updateTotals();
   });
 }
 
