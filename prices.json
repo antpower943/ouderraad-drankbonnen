@@ -11,6 +11,10 @@
       "name": "Bieren"
     },
     {
+      "id": "wijn",
+      "name": "Wijnen"
+    },
+    {
       "id": "snacks",
       "name": "Snacks"
     }
@@ -24,25 +28,81 @@
       "image": "assets/cocacola.avif"
     },
     {
-      "id": "water",
+      "id": "colazero",
+      "name": "Coca-Cola Zero",
+      "tickets": 3,
+      "category": "frisdrank",
+      "image": "assets/cocacolazero.webp"
+    },
+    {
+      "id": "fanta",
+      "name": "Fanta",
+      "tickets": 3,
+      "category": "frisdrank",
+      "image": "assets/fanta.webp"
+    },
+    {
+      "id": "platwater",
       "name": "Plat Water",
       "tickets": 2,
       "category": "frisdrank",
       "image": "assets/water.png"
     },
     {
-      "id": "pils",
-      "name": "Pils / Stella",
-      "tickets": 3,
-      "category": "bier",
-      "image": "assets/pils.png"
+      "id": "spuitwater",
+      "name": "Spuit Water",
+      "tickets": 2,
+      "category": "frisdrank",
+      "image": "assets/water.png"
     },
     {
-      "id": "duvel",
-      "name": "Duvel",
+      "id": "jupiler",
+      "name": "Jupiler",
+      "tickets": 3,
+      "category": "bier",
+      "image": "assets/jupiler.jpg"
+    },
+    {
+      "id": "carlsberg00",
+      "name": "Carlsberg 0.0",
+      "tickets": 3,
+      "category": "bier",
+      "image": "assets/carlsberg00.png"
+    },
+    {
+      "id": "ezel",
+      "name": "Ezel",
       "tickets": 5,
       "category": "bier",
-      "image": "assets/duvel.png"
+      "image": "assets/ezel.jpg"
+    },
+    {
+      "id": "wittewijn",
+      "name": "Witte Wijn",
+      "tickets": 5,
+      "category": "wijn",
+      "image": "assets/glaswittewijn.webp"
+    },
+    {
+      "id": "wittewijnfles",
+      "name": "Witte Wijn (fles)",
+      "tickets": 5,
+      "category": "wijn",
+      "image": "assets/fleswittewijn.webp"
+    },
+    {
+      "id": "rosewijn",
+      "name": "Rose Wijn",
+      "tickets": 5,
+      "category": "wijn",
+      "image": "assets/glasrosewijn.jpg"
+    },
+    {
+      "id": "rosewijnfles",
+      "name": "Rose Wijn (fles)",
+      "tickets": 5,
+      "category": "wijn",
+      "image": "assets/flesrosewijn.webp"
     },
     {
       "id": "chips",
