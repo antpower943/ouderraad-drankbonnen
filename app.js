@@ -404,3 +404,53 @@ document.addEventListener('click', () => {
     requestWakeLock();
   }
 }, { once: false });
+
+// --- PWA Installation Logic ---
+let deferredPrompt = null;
+
+function setupInstallPrompt() {
+  const installBanner = document.getElementById('install-banner');
+  const btnInstall = document.getElementById('btn-install-app');
+  const btnCloseInstall = document.getElementById('btn-close-install');
+  const installInstructions = document.getElementById('install-instructions');
+
+  // Check if app is already running as standalone PWA
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if (isStandalone) return; // Don't show prompt if already installed
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  // Capture Android / Chrome native prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.classList.remove('hidden');
+  });
+
+  // Handle iOS Safari specific instructions
+  if (isIOS && !isStandalone) {
+    installInstructions.innerHTML = 'Tik op het <strong>Deel-icoon</strong> (vierkant met pijl omhoog) en kies <strong>"Zet op begin构scherm"</strong>.';
+    btnInstall.style.display = 'none'; // iOS requires manual share sheet navigation
+    installBanner.classList.remove('hidden');
+  }
+
+  // Handle click on Install button (Android / Chrome)
+  btnInstall.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Install prompt outcome: ${outcome}`);
+      deferredPrompt = null;
+      installBanner.classList.add('hidden');
+    }
+  });
+
+  btnCloseInstall.addEventListener('click', () => {
+    installBanner.classList.add('hidden');
+  });
+}
+
+// Call inside DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  setupInstallPrompt();
+});

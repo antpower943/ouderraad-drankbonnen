@@ -23,18 +23,18 @@
 <body>
 
   <!-- Top Header -->
-    <header class="app-header">
-    <h1>Ouderraad Bonnetjeshulp</h1>
-    <div style="display: flex; gap: 8px; align-items: center;">
-        <div id="wake-badge" class="status-badge" title="Scherm blijft aan">
-        <span style="font-size: 0.8rem;">💡</span>
-        </div>
-        <div id="status-badge" class="status-badge online">
-        <span class="status-dot"></span>
-        <span id="status-text">Online</span>
-        </div>
+<header class="app-header">
+  <h1>Ouderraad Drankenhulp</h1>
+  <div style="display: flex; gap: 8px; align-items: center;">
+    <div id="wake-badge" class="status-badge" title="Scherm blijft aan">
+      <span style="font-size: 0.8rem;">💡</span>
     </div>
-    </header>
+    <div id="status-badge" class="status-badge online">
+      <span class="status-dot"></span>
+      <span id="status-text">Online</span>
+    </div>
+  </div>
+</header>
 
   <!-- Category Filter Bar -->
   <nav class="category-nav" id="category-nav">
@@ -94,6 +94,20 @@
     </div>
 
   </section>
+
+  <!-- Install Banner Modal -->
+    <div id="install-banner" class="install-banner hidden">
+    <div class="install-content">
+        <div class="install-text">
+        <strong>Installeer Drankenhulp</strong>
+        <p id="install-instructions">Voeg toe aan je startscherm voor snel en offline gebruik behind de bar.</p>
+        </div>
+        <div class="install-actions">
+        <button id="btn-install-app" class="btn-install">Installeer</button>
+        <button id="btn-close-install" class="btn-dismiss">Later</button>
+        </div>
+    </div>
+    </div>
 
   <!-- Main JS Script -->
   <script src="app.js"></script>
